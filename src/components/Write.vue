@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-toolbar color="blue darken-4" dense>
-      <input type="text" v-model="data.title" placeholder="Untitled document">
+    <v-toolbar color="blue darken-3" dense>
+      <input type="text" v-model="data.title" placeholder="Untitled document" class="doc-title">
       <v-spacer></v-spacer>
       <v-btn @click="newDocument()" icon class="hidden-sm-and-down"><v-icon>mdi-file-document-box-plus</v-icon></v-btn>
       <v-btn @click="$notify('Function not implemented')" icon class="hidden-sm-and-down"><v-icon>mdi-printer</v-icon></v-btn>
@@ -238,7 +238,7 @@
         </template>
         <v-color-picker show-swatches mode="hexa" style="background-color: #2E2E2E;" v-model="data.blocks[current_block.index].format.color"></v-color-picker>
       </v-menu>
-      <v-btn icon @click="clearFormat(current_block.index)" class="hidden-sm-and-down"><v-icon>mdi-format-clear</v-icon></v-btn>
+      <v-btn icon @click="clearFormat(current_block.index)" class="hidden-sm-and-down" v-if="current_block.type == 'text' || current_block.type == 'header'"><v-icon>mdi-format-clear</v-icon></v-btn>
 
 
 
@@ -341,28 +341,6 @@
         </v-list>
       </v-menu>
     </v-toolbar>
-
-    <v-dialog v-model="open_dialog" max-width="500">
-      <v-card>
-        <v-card-title>
-          <span>Open a Document</span>
-          <v-spacer></v-spacer>
-          <v-btn icon @click="open_dialog = false" class="dialog-close-btn">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-card-title>
-
-        <v-card-text>
-          <input id="file-uploader" type="file" name="file" accept="application/json">
-        </v-card-text>
-
-        <v-card-actions>
-          <v-btn text color="accent" @click="openDocument()">Open</v-btn>
-          <v-spacer></v-spacer>
-          <v-btn text color="red" @click="open_dialog = false">Cancel</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
 
     <v-container id="editor" @click.self="current_block = {}" @mouseover.self="current_hover_block_index = null">
       <v-layout v-for="(block, index) in data.blocks" :key="index" @click="current_block = block" class="block" align-center justify-center @mouseover="current_hover_block_index = block.index">
@@ -525,6 +503,45 @@
         </v-flex>
       </v-layout>
     </v-container>
+
+    <v-dialog v-model="open_dialog" max-width="500">
+      <v-card>
+        <v-card-title>
+          <span>Open a Document</span>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="open_dialog = false" class="dialog-close-btn">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+
+        <v-card-text>
+          <input id="file-uploader" type="file" name="file" accept="application/json">
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn text color="accent" @click="openDocument()">Open</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn text color="red" @click="open_dialog = false">Cancel</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="corrupt_dialog" max-width="350">
+      <v-card color="red">
+        <v-card-title>
+          <span style="margin: auto;" class="white--text font-weight-bold text-uppercase">Corrupt Document</span>
+        </v-card-title>
+
+        <v-card-text style="text-align: center;">Please upload a valid document.</v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text color="white" @click="corrupt_dialog = false">Okay</v-btn>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </div>
 </template>
 
@@ -537,6 +554,7 @@ export default {
   data() {
     return {
       open_dialog: false,
+      corrupt_dialog: false,
       data: {
         title: '',
         blocks: [
@@ -560,21 +578,25 @@ export default {
     },
     openDocument() {
       var files = document.getElementById('file-uploader').files
-
+      var file_ext_search = files[0].name.search('.write.json')
+      var corrupt = true
+      if (file_ext_search >= 1) corrupt = false
       var reader = new FileReader()
-
-      reader.onload = e => { 
-        this.data = JSON.parse(e.target.result)
+      if (!corrupt) {
+        reader.onload = e => {
+          this.data = JSON.parse(e.target.result)
+        }
+        reader.readAsText(files.item(0))
+        this.open_dialog = false
+      } else {
+        document.getElementById('file-uploader').value = null
+        this.corrupt_dialog = true
       }
-
-      reader.readAsText(files.item(0))
-
-      this.open_dialog = false
     },
     saveDocument() {
       if (this.data.title) {
         var data = JSON.stringify(this.data)
-        var file = new File([ data ], this.data.title + '.json', { type: 'application/json' })
+        var file = new File([ data ], this.data.title + '.write.json', { type: 'application/json' })
         saveAs(file)
       } else {
         this.$notify('Name your document')
@@ -645,13 +667,8 @@ iframe {
   border: none !important;
 }
 
-.doc-title {
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-	text-align: center;
+input.doc-title::placeholder {
+  color: #424242;
 }
 
 .theme--dark.v-btn:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) {

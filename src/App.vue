@@ -1,7 +1,7 @@
 <template>
   <v-app dark>
     <!-- System toolbar -->
-    <v-system-bar app window style="-webkit-app-region: drag;" class="grey darken-4">
+    <v-system-bar app window style="-webkit-app-region: drag;" class="blue darken-4">
       <v-spacer></v-spacer>
       <div class="centralize">
         <img src="./assets/logo.png" height="18" style="position: relative; top: +2px; margin-right: 5px;">
