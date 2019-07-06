@@ -1,11 +1,12 @@
 {
   "name": "Write",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "description": "A lightweight, yet powerful word processor.",
   "author": "Paradigm Development, Inc.",
+  "repository": "github:Paradigm-Dev/write-desktop",
   "scripts": {
-    "build": "vue-cli-service electron:build",
+    "build": "vue-cli-service electron:build --publish always --win",
     "serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
@@ -14,6 +15,7 @@
   "dependencies": {
     "@mdi/font": "^3.7.95",
     "core-js": "^2.6.5",
+    "electron-updater": "^4.0.14",
     "file-saver": "^2.0.2",
     "print-js": "^1.0.61",
     "vue": "^2.6.10",

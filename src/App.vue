@@ -2,7 +2,7 @@
   <v-app dark>
     <!-- System toolbar -->
     <v-system-bar app window style="-webkit-app-region: drag;" class="blue darken-4">
-      <span class="font-weight-light grey--text lighten-4">Early-access beta</span>
+      <span class="font-weight-light grey--text lighten-4">Early-access alpha</span>
       <v-spacer></v-spacer>
       <div class="centralize">
         <img src="./assets/logo.png" height="18" style="position: relative; top: +2px; margin-right: 5px;">
@@ -38,7 +38,7 @@ export default {
 	data() {
 		return {
 			win: remote.getCurrentWindow(),
-			maximized: remote.getCurrentWindow().isMaximized()
+      maximized: remote.getCurrentWindow().isMaximized()
 		}
 	},
   methods: {
@@ -64,7 +64,7 @@ export default {
     },
     goForward() {
       this.win.webContents.goForward()
-    },
+    }
   }
 }
 </script>

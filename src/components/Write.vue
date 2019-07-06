@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-toolbar color="blue darken-3" dense>
-      <input type="text" v-model="data.title" placeholder="Untitled document" class="doc-title">
+      <input type="text" v-model="data.title" placeholder="Untitled document" class="doc-title" >
       <v-spacer></v-spacer>
       <v-btn @click="newDocument()" icon class="hidden-sm-and-down"><v-icon>mdi-file-document-box-plus</v-icon></v-btn>
       <v-btn @click="$notify('Function not implemented')" icon class="hidden-sm-and-down"><v-icon>mdi-printer</v-icon></v-btn>
@@ -31,8 +31,7 @@
       </v-menu>
     </v-toolbar>
 
-    <v-toolbar color="blue darken-2" dense>
-
+    <v-toolbar color="blue darken-2" dense ref="writetoolbar">
       <!-- Mobile add menu -->
       <v-menu offset-y :close-on-content-click="false" class="hidden-md-and-up">
         <template v-slot:activator="{ on }">
@@ -633,6 +632,18 @@ export default {
     clearFormat(index) {
       this.data.blocks[index].format = { b: false, i: false, ul: false, str: false, ol: false, align: 'left', font: 'Roboto', color: '#FFFFFF', just: 'top' }
     }
+  },
+  mounted() {
+    window.onscroll = function() { checkIfToolbarStuck() }
+    var navbar = this.$refs.writetoolbar.$el
+    var sticky = navbar.offsetTop
+    function checkIfToolbarStuck() {
+      if (window.pageYOffset >= sticky) {
+        navbar.classList.add('sticky-toolbar')
+      } else {
+        navbar.classList.remove('sticky-toolbar')
+      }
+    }
   }
 }
 </script>
@@ -719,5 +730,11 @@ textarea {
 
 .display-4 {
   line-height: 7.15rem;
+}
+
+.sticky-toolbar {
+  position: fixed;
+  top: 32px;
+  width: 100%;
 }
 </style>
