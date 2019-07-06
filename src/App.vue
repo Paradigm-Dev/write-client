@@ -75,6 +75,7 @@ export default {
 /* width */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 /* Track */
@@ -90,6 +91,11 @@ export default {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: rgb(60, 60, 60);
+}
+
+/* Corner */
+::-webkit-scrollbar-corner {
+  background: rgb(33, 33, 33);
 }
 
 html {

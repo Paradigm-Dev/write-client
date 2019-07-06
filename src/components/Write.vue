@@ -380,7 +380,7 @@
             <input type="text" v-model="block.alt" placeholder="Caption" style="width: 250px; margin-right: 14px;">
             <v-btn text color="accent" @click="block.src_saved = true" v-if="block.src">Save</v-btn>
           </div>
-          <img v-if="block.src_saved" :src="block.src" :alt="block.alt" style="max-width: 1000px; margin: auto;">
+          <img v-if="block.src_saved" :src="block.src" :alt="block.alt" style="max-width: calc(100vw - 28%);">
           <p v-if="block.src_saved" class="caption" style="text-align: right; margin-right: 100px;">{{ block.alt }}</p>
         </v-flex>
 
