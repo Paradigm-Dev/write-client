@@ -177,7 +177,7 @@
         <template v-slot:activator="{ on }">
           <v-btn class="hidden-sm-and-down" v-on="on" icon v-if="current_block.type == 'text' || current_block.type == 'header'"><v-icon>mdi-format-align-{{ data.blocks[current_block.index].format.align }}</v-icon></v-btn>
         </template>
-        <v-list>
+        <v-list dense>
           <v-list-item-group v-model="data.blocks[current_block.index].format.align">
             <v-list-item value="left">
               <v-list-item-title><v-icon>mdi-format-align-left</v-icon></v-list-item-title>
