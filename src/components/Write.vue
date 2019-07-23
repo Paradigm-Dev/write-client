@@ -324,7 +324,7 @@
         </v-card-title>
 
         <v-card-text>
-          <input id="file-uploader" type="file" name="file" accept="application/json">
+          <v-file-input v-model="uploaded_file" id="file-uploader" label="Write document" accept="application/json"></v-file-input>
         </v-card-text>
 
         <v-card-actions>
@@ -372,7 +372,8 @@ export default {
         ]
       },
       current_block: {},
-      current_hover_block_index: null
+      current_hover_block_index: null,
+      uploaded_file: undefined
     }
   },
   methods: {
@@ -386,19 +387,18 @@ export default {
       }
     },
     openDocument() {
-      var files = document.getElementById('file-uploader').files
-      var file_ext_search = files[0].name.search('.write.json')
-      var corrupt = true
+      var file_ext_search = this.uploaded_file.name.search('.write.json')
+      var corrupt = false
       if (file_ext_search >= 1) corrupt = false
       var reader = new FileReader()
       if (!corrupt) {
         reader.onload = e => {
           this.data = JSON.parse(e.target.result)
         }
-        reader.readAsText(files.item(0))
+        reader.readAsText(this.uploaded_file)
         this.open_dialog = false
       } else {
-        document.getElementById('file-uploader').value = null
+        this.uploaded_file = undefined
         this.corrupt_dialog = true
       }
     },
