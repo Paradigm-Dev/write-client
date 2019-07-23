@@ -3,105 +3,16 @@
     <v-toolbar color="blue darken-3" dense>
       <input type="text" v-model="data.title" placeholder="Untitled document" class="doc-title" >
       <v-spacer></v-spacer>
-      <v-btn @click="newDocument()" icon class="hidden-sm-and-down"><v-icon>mdi-file-document-box-plus</v-icon></v-btn>
-      <v-btn @click="$notify('Function not implemented')" icon class="hidden-sm-and-down"><v-icon>mdi-printer</v-icon></v-btn>
-      <v-btn @click="open_dialog = true" icon class="hidden-sm-and-down"><v-icon>mdi-folder-open</v-icon></v-btn>
-      <v-btn @click="saveDocument()" icon class="hidden-sm-and-down"><v-icon>mdi-content-save</v-icon></v-btn>
-      <v-menu offset-y class="hidden-md-and-up">
-        <template v-slot:activator="{ on }">
-          <v-btn v-on="on" icon class="hidden-md-and-up"><v-icon>mdi-menu</v-icon></v-btn>
-        </template>
-        <v-list dense>
-          <v-list-item @click="saveDocument()">
-            <v-list-item-title><v-icon>mdi-content-save</v-icon></v-list-item-title>
-          </v-list-item>
-
-          <v-list-item @click="open_dialog = true">
-            <v-list-item-title><v-icon>mdi-folder-open</v-icon></v-list-item-title>
-          </v-list-item>
-
-          <v-list-item @click="newDocument()">
-            <v-list-item-title><v-icon>mdi-file-document-box-plus</v-icon></v-list-item-title>
-          </v-list-item>
-
-          <v-list-item @click="$notify('Function not implemented')">
-            <v-list-item-title><v-icon>mdi-printer</v-icon></v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+      <v-btn @click="newDocument()" icon><v-icon>mdi-file-document-box-plus</v-icon></v-btn>
+      <v-btn @click="$notify('Function not implemented')" icon><v-icon>mdi-printer</v-icon></v-btn>
+      <v-btn @click="open_dialog = true" icon><v-icon>mdi-folder-open</v-icon></v-btn>
+      <v-btn @click="saveDocument()" icon><v-icon>mdi-content-save</v-icon></v-btn>
     </v-toolbar>
 
     <v-toolbar color="blue darken-2" dense ref="writetoolbar">
-      <!-- Mobile add menu -->
-      <v-menu offset-y :close-on-content-click="false" class="hidden-md-and-up">
+      <v-menu offset-y>
         <template v-slot:activator="{ on }">
-          <v-btn v-on="on" icon class="hidden-md-and-up"><v-icon>mdi-plus</v-icon></v-btn>
-        </template>
-        <v-list dense>
-          <v-menu offset-x>
-            <template v-slot:activator="{ on }">
-              <v-list-item v-on="on" icon class="hidden-md-and-up"><v-icon>mdi-format-text-variant</v-icon></v-list-item>
-            </template>
-            <v-list dense>
-              <v-list-item @click="data.blocks.push({ type: 'text', content: '', format: { b: false, i: false, ul: false, str: false, ol: false, align: 'left', font: 'Roboto', color: '#FFFFFF', just: 'top' }, index: data.blocks.length, rows: 3 })">
-                <v-list-item-title><v-icon>mdi-format-paragraph</v-icon></v-list-item-title>
-              </v-list-item>
-
-              <v-list-item @click="data.blocks.push({ type: 'header', content: '', format: { b: false, i: false, ul: false, str: false, ol: false, align: 'left', font: 'Roboto', color: '#FFFFFF', just: 'top' }, index: data.blocks.length, size: 1, rows: 1 })">
-                <v-list-item-title><v-icon>mdi-format-header-1</v-icon></v-list-item-title>
-              </v-list-item>
-
-              <v-list-item @click="data.blocks.push({ type: 'header', content: '', format: { b: false, i: false, ul: false, str: false, ol: false, align: 'left', font: 'Roboto', color: '#FFFFFF', just: 'top' }, index: data.blocks.length, size: 2, rows: 1 })">
-                <v-list-item-title><v-icon>mdi-format-header-2</v-icon></v-list-item-title>
-              </v-list-item>
-
-              <v-list-item @click="data.blocks.push({ type: 'header', content: '', format: { b: false, i: false, ul: false, str: false, ol: false, align: 'left', font: 'Roboto', color: '#FFFFFF', just: 'top' }, index: data.blocks.length, size: 3, rows: 1 })">
-                <v-list-item-title><v-icon>mdi-format-header-3</v-icon></v-list-item-title>
-              </v-list-item>
-
-              <v-list-item @click="data.blocks.push({ type: 'header', content: '', format: { b: false, i: false, ul: false, str: false, ol: false, align: 'left', font: 'Roboto', color: '#FFFFFF', just: 'top' }, index: data.blocks.length, size: 4, rows: 1 })">
-                <v-list-item-title><v-icon>mdi-format-header-4</v-icon></v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-          <v-menu offset-x>
-            <template v-slot:activator="{ on }">
-              <v-list-item v-on="on" icon class="hidden-md-and-up"><v-icon>mdi-menu</v-icon></v-list-item>
-            </template>
-            <v-list dense>
-              <v-list-item @click="data.blocks.push({ type: 'nl', list: ['', '', ''], index: data.blocks.length })">
-                <v-list-item-title><v-icon>mdi-menu</v-icon></v-list-item-title>
-              </v-list-item>
-
-              <v-list-item @click="data.blocks.push({ type: 'ul', list: ['', '', ''], index: data.blocks.length })">
-                <v-list-item-title><v-icon>mdi-format-list-bulleted</v-icon></v-list-item-title>
-              </v-list-item>
-
-              <v-list-item @click="data.blocks.push({ type: 'ol', list: ['', '', ''], index: data.blocks.length })">
-                <v-list-item-title><v-icon>mdi-format-list-numbered</v-icon></v-list-item-title>
-              </v-list-item>
-
-              <v-list-item @click="data.blocks.push({ type: 'cl', list: ['', '', ''], index: data.blocks.length })">
-                <v-list-item-title><v-icon>mdi-format-list-checkbox</v-icon></v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-          <v-list-item icon @click="data.blocks.push({ type: 'image', src: '', alt: '', src_saved: false, index: data.blocks.length })"><v-icon>mdi-image</v-icon></v-list-item>
-          <v-list-item icon @click="data.blocks.push({ type: 'divider', index: data.blocks.length })"><v-icon>mdi-minus</v-icon></v-list-item>
-          <v-list-item icon @click="data.blocks.push({ type: 'code', index: data.blocks.length })"><v-icon>mdi-code-tags</v-icon></v-list-item>
-          <v-list-item icon @click="data.blocks.push({ type: 'embed', src: '', src_saved: '', index: data.blocks.length, size: 100 })"><v-icon>mdi-web</v-icon></v-list-item>
-          <v-list-item icon @click="data.blocks.push({ type: 'html', src: '', src_saved: '', index: data.blocks.length, size: 100 })"><v-icon>mdi-language-html5</v-icon></v-list-item>
-          <v-list-item icon @click="data.blocks.push({ type: 'quote', content: '', author: '', src_saved: '', index: data.blocks.length })"><v-icon>mdi-format-quote-close</v-icon></v-list-item>
-          <v-list-item icon @click="data.blocks.push({ type: 'icon', src: '', src_saved: '', index: data.blocks.length })"><v-icon>mdi-star</v-icon></v-list-item>
-          <v-list-item icon @click="data.blocks.push({ type: 'gap', index: data.blocks.length })"><v-icon>mdi-arrow-expand-vertical</v-icon></v-list-item>
-        </v-list>
-      </v-menu>
-
-
-      <!-- Desktop toolbar -->
-      <v-menu offset-y class="hidden-sm-and-down">
-        <template v-slot:activator="{ on }">
-          <v-btn v-on="on" icon class="hidden-sm-and-down"><v-icon>mdi-format-text-variant</v-icon></v-btn>
+          <v-btn v-on="on" icon><v-icon>mdi-format-text-variant</v-icon></v-btn>
         </template>
         <v-list dense>
           <v-list-item @click="data.blocks.push({ type: 'text', content: '', format: { b: false, i: false, ul: false, str: false, ol: false, align: 'left', font: 'Roboto', color: '#FFFFFF', just: 'top' }, index: data.blocks.length, rows: 3 })">
@@ -125,9 +36,9 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <v-menu offset-y class="hidden-sm-and-down">
+      <v-menu offset-y>
         <template v-slot:activator="{ on }">
-          <v-btn v-on="on" icon class="hidden-sm-and-down"><v-icon>mdi-menu</v-icon></v-btn>
+          <v-btn v-on="on" icon><v-icon>mdi-menu</v-icon></v-btn>
         </template>
         <v-list dense>
           <v-list-item @click="data.blocks.push({ type: 'nl', list: ['', '', ''], index: data.blocks.length })">
@@ -147,16 +58,16 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <v-btn icon @click="data.blocks.push({ type: 'image', src: '', alt: '', src_saved: false, index: data.blocks.length })" class="hidden-sm-and-down"><v-icon>mdi-image</v-icon></v-btn>
-      <v-btn icon @click="data.blocks.push({ type: 'divider', index: data.blocks.length })" class="hidden-sm-and-down"><v-icon>mdi-minus</v-icon></v-btn>
-      <v-btn icon @click="data.blocks.push({ type: 'code', index: data.blocks.length })" class="hidden-sm-and-down"><v-icon>mdi-code-tags</v-icon></v-btn>
-      <v-btn icon @click="data.blocks.push({ type: 'embed', src: '', src_saved: '', index: data.blocks.length })" class="hidden-sm-and-down"><v-icon>mdi-web</v-icon></v-btn>
-      <v-btn icon @click="data.blocks.push({ type: 'html', src: '', src_saved: '', index: data.blocks.length })" class="hidden-sm-and-down"><v-icon>mdi-language-html5</v-icon></v-btn>
-      <v-btn icon @click="data.blocks.push({ type: 'quote', content: '', author: '', src_saved: '', index: data.blocks.length })" class="hidden-sm-and-down"><v-icon>mdi-format-quote-close</v-icon></v-btn>
-      <v-btn icon @click="data.blocks.push({ type: 'icon', src: '', src_saved: '', index: data.blocks.length })" class="hidden-sm-and-down"><v-icon>mdi-star</v-icon></v-btn>
-      <v-btn icon @click="data.blocks.push({ type: 'gap', index: data.blocks.length })" class="hidden-sm-and-down"><v-icon>mdi-arrow-expand-vertical</v-icon></v-btn>
-      <v-spacer class="hidden-sm-and-down"></v-spacer>
-      <div class="hidden-sm-and-down" v-if="current_block.type == 'text' || current_block.type == 'header'">
+      <v-btn icon @click="data.blocks.push({ type: 'image', src: '', alt: '', src_saved: false, index: data.blocks.length })"><v-icon>mdi-image</v-icon></v-btn>
+      <v-btn icon @click="data.blocks.push({ type: 'divider', index: data.blocks.length })"><v-icon>mdi-minus</v-icon></v-btn>
+      <v-btn icon @click="data.blocks.push({ type: 'code', index: data.blocks.length })"><v-icon>mdi-code-tags</v-icon></v-btn>
+      <v-btn icon @click="data.blocks.push({ type: 'embed', src: '', src_saved: '', index: data.blocks.length })"><v-icon>mdi-web</v-icon></v-btn>
+      <v-btn icon @click="data.blocks.push({ type: 'html', src: '', src_saved: '', index: data.blocks.length })"><v-icon>mdi-language-html5</v-icon></v-btn>
+      <v-btn icon @click="data.blocks.push({ type: 'quote', content: '', author: '', src_saved: '', index: data.blocks.length })"><v-icon>mdi-format-quote-close</v-icon></v-btn>
+      <v-btn icon @click="data.blocks.push({ type: 'icon', src: '', src_saved: '', index: data.blocks.length })"><v-icon>mdi-star</v-icon></v-btn>
+      <v-btn icon @click="data.blocks.push({ type: 'gap', index: data.blocks.length })"><v-icon>mdi-arrow-expand-vertical</v-icon></v-btn>
+      <v-spacer></v-spacer>
+      <div v-if="current_block.type == 'text' || current_block.type == 'header'">
         <v-btn icon @click="data.blocks[current_block.index].format.b = !data.blocks[current_block.index].format.b" v-model="data.blocks[current_block.index].format.b">
           <v-icon>mdi-format-bold</v-icon>
         </v-btn>
@@ -173,9 +84,9 @@
           <v-icon>mdi-format-strikethrough</v-icon>
         </v-btn>
       </div>
-      <v-menu class="hidden-sm-and-down" :close-on-content-click="false" offset-y v-if="current_block.type == 'text' || current_block.type == 'header'">
+      <v-menu :close-on-content-click="false" offset-y v-if="current_block.type == 'text' || current_block.type == 'header'">
         <template v-slot:activator="{ on }">
-          <v-btn class="hidden-sm-and-down" v-on="on" icon v-if="current_block.type == 'text' || current_block.type == 'header'"><v-icon>mdi-format-align-{{ data.blocks[current_block.index].format.align }}</v-icon></v-btn>
+          <v-btn v-on="on" icon v-if="current_block.type == 'text' || current_block.type == 'header'"><v-icon>mdi-format-align-{{ data.blocks[current_block.index].format.align }}</v-icon></v-btn>
         </template>
         <v-list dense>
           <v-list-item-group v-model="data.blocks[current_block.index].format.align">
@@ -207,9 +118,9 @@
           </v-list-item-group>
         </v-list>
       </v-menu>
-      <v-menu offset-y class="hidden-sm-and-down" v-if="current_block.type == 'text' || current_block.type == 'header'">
+      <v-menu offset-y v-if="current_block.type == 'text' || current_block.type == 'header'">
         <template v-slot:activator="{ on }">
-          <v-btn v-on="on" icon class="hidden-sm-and-down" v-if="current_block.type == 'text' || current_block.type == 'header'"><v-icon>mdi-format-font</v-icon></v-btn>
+          <v-btn v-on="on" icon v-if="current_block.type == 'text' || current_block.type == 'header'"><v-icon>mdi-format-font</v-icon></v-btn>
         </template>
         <v-list dense>
           <v-list-item-group  v-model="data.blocks[current_block.index].format.font">
@@ -231,114 +142,13 @@
           </v-list-item-group>
         </v-list>
       </v-menu>
-      <v-menu :close-on-content-click="false" offset-y class="hidden-sm-and-down" v-if="current_block.type == 'text' || current_block.type == 'header'">
+      <v-menu :close-on-content-click="false" offset-y v-if="current_block.type == 'text' || current_block.type == 'header'">
         <template v-slot:activator="{ on }">
-          <v-btn :style="{ 'color': data.blocks[current_block.index].format.color }" v-on="on" icon class="hidden-sm-and-down" v-if="current_block.type == 'text' || current_block.type == 'header'"><v-icon>mdi-format-color-fill</v-icon></v-btn>
+          <v-btn :style="{ 'color': data.blocks[current_block.index].format.color }" v-on="on" icon v-if="current_block.type == 'text' || current_block.type == 'header'"><v-icon>mdi-format-color-fill</v-icon></v-btn>
         </template>
         <v-color-picker show-swatches mode="hexa" style="background-color: #2E2E2E;" v-model="data.blocks[current_block.index].format.color"></v-color-picker>
       </v-menu>
-      <v-btn icon @click="clearFormat(current_block.index)" class="hidden-sm-and-down" v-if="current_block.type == 'text' || current_block.type == 'header'"><v-icon>mdi-format-clear</v-icon></v-btn>
-
-
-
-
-      <!-- Mobile format -->
-      <v-spacer class="hidden-md-and-up"></v-spacer>
-      <v-menu :close-on-content-click="false" offset-y class="hidden-md-and-up" v-if="current_block.type == 'text' || current_block.type == 'header'">
-        <template v-slot:activator="{ on }">
-          <v-btn v-on="on" icon class="hidden-md-and-up"><v-icon>mdi-format-paint</v-icon></v-btn>
-        </template>
-        <v-list dense>
-          <v-list-item @click="data.blocks[current_block.index].format.b = !data.blocks[current_block.index].format.b"  v-model="data.blocks[current_block.index].format.b">
-            <v-list-item-title><v-icon>mdi-format-bold</v-icon></v-list-item-title>
-          </v-list-item>
-
-          <v-list-item @click="data.blocks[current_block.index].format.i = !data.blocks[current_block.index].format.i"  v-model="data.blocks[current_block.index].format.i">
-            <v-list-item-title><v-icon>mdi-format-italic</v-icon></v-list-item-title>
-          </v-list-item>
-
-          <v-list-item @click="data.blocks[current_block.index].format.ul = !data.blocks[current_block.index].format.ul"  v-model="data.blocks[current_block.index].format.ul">
-            <v-list-item-title><v-icon>mdi-format-underline</v-icon></v-list-item-title>
-          </v-list-item>
-
-          <v-list-item @click="data.blocks[current_block.index].format.ol = !data.blocks[current_block.index].format.ol"  v-model="data.blocks[current_block.index].format.ol">
-            <v-list-item-title><v-icon>mdi-format-overline</v-icon></v-list-item-title>
-          </v-list-item>
-
-          <v-list-item @click="data.blocks[current_block.index].format.str = !data.blocks[current_block.index].format.str"  v-model="data.blocks[current_block.index].format.str">
-            <v-list-item-title><v-icon>mdi-format-strikethrough</v-icon></v-list-item-title>
-          </v-list-item>
-
-          <v-menu class="hidden-md-and-up" :close-on-content-click="false" offset-x left v-if="current_block.type == 'text' || current_block.type == 'header'">
-            <template v-slot:activator="{ on }">
-              <v-list-item class="hidden-md-and-up" v-on="on" icon v-if="current_block.type == 'text' || current_block.type == 'header'"><v-icon>mdi-format-align-{{ data.blocks[current_block.index].format.align }}</v-icon></v-list-item>
-            </template>
-            <v-list dense>
-              <v-list-item-group v-model="data.blocks[current_block.index].format.align">
-                <v-list-item value="left">
-                  <v-list-item-title><v-icon>mdi-format-align-left</v-icon></v-list-item-title>
-                </v-list-item>
-
-                <v-list-item value="center">
-                  <v-list-item-title><v-icon>mdi-format-align-center</v-icon></v-list-item-title>
-                </v-list-item>
-
-                <v-list-item value="right">
-                  <v-list-item-title><v-icon>mdi-format-align-right</v-icon></v-list-item-title>
-                </v-list-item>
-              </v-list-item-group>
-
-              <v-list-item-group v-model="data.blocks[current_block.index].format.just">
-                <v-list-item value="top">
-                  <v-list-item-title><v-icon>mdi-format-align-top</v-icon></v-list-item-title>
-                </v-list-item>
-
-                <v-list-item value="middle">
-                  <v-list-item-title><v-icon>mdi-format-align-middle</v-icon></v-list-item-title>
-                </v-list-item>
-
-                <v-list-item value="bottom">
-                  <v-list-item-title><v-icon>mdi-format-align-bottom</v-icon></v-list-item-title>
-                </v-list-item>
-              </v-list-item-group>
-            </v-list>
-          </v-menu>
-
-          <v-menu offset-x left class="hidden-md-and-up">
-            <template v-slot:activator="{ on }">
-              <v-list-item v-on="on" icon class="hidden-md-and-up"><v-icon>mdi-format-font</v-icon></v-list-item>
-            </template>
-            <v-list dense>
-              <v-list-item-group v-model="data.blocks[current_block.index].format.font">
-                <v-list-item value="Roboto">
-                  <v-list-item-title style="font-family: 'Roboto'"><v-list-item-title>Aa</v-list-item-title></v-list-item-title>
-                </v-list-item>
-
-                <v-list-item value="Roboto Slab">
-                  <v-list-item-title style="font-family: 'Roboto Slab'"><v-list-item-title>Aa</v-list-item-title></v-list-item-title>
-                </v-list-item>
-
-                <v-list-item value="Roboto Mono">
-                  <v-list-item-title style="font-family: 'Roboto Mono'"><v-list-item-title>Aa</v-list-item-title></v-list-item-title>
-                </v-list-item>
-
-                <v-list-item value="Roboto Condensed">
-                  <v-list-item-title style="font-family: 'Roboto Condensed'"><v-list-item-title>Aa</v-list-item-title></v-list-item-title>
-                </v-list-item>
-              </v-list-item-group>
-            </v-list>
-          </v-menu>
-          <v-menu :close-on-content-click="false" offset-x class="hidden-md-and-up" v-if="current_block.type == 'text' || current_block.type == 'header'">
-            <template v-slot:activator="{ on }">
-              <v-list-item v-on="on" icon class="hidden-md-and-up" v-if="current_block.type == 'text' || current_block.type == 'header'"><v-icon :style="{ 'color': data.blocks[current_block.index].format.color }">mdi-format-color-fill</v-icon></v-list-item>
-            </template>
-            <v-color-picker show-swatches mode="hexa" style="background-color: #2E2E2E;" v-model="data.blocks[current_block.index].format.color"></v-color-picker>
-          </v-menu>
-          <v-list-item @click="clearFormat(current_block.index)">
-            <v-list-item-title><v-icon>mdi-format-clear</v-icon></v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+      <v-btn icon @click="clearFormat(current_block.index)" v-if="current_block.type == 'text' || current_block.type == 'header'"><v-icon>mdi-format-clear</v-icon></v-btn>
     </v-toolbar>
 
     <v-container id="editor" @click.self="current_block = {}" @mouseover.self="current_hover_block_index = null">
