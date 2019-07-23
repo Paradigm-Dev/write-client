@@ -530,6 +530,10 @@ textarea {
   resize: none;
 }
 
+.display-1 {
+  padding: 8px 0px 8px 0px;
+}
+
 .display-2 {
   line-height: 3.6rem;
 }
