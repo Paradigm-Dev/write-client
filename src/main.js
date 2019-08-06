@@ -29,8 +29,9 @@ Vue.use(Vuetify)
 Vue.mixin({
   methods: {
     $notify(text) {
-      this.$root.feedback = text
-      this.$root.snackbar = true
+      this.$root.notify.text = text
+      this.$root.notify.is = true
+      setTimeout(() => { this.$root.notify.is = false }, 3000)
     }
   }
 })
@@ -40,8 +41,10 @@ new Vue({
   vuetify: new Vuetify(opts),
   data() {
     return {
-      snackbar: false,
-      feedback: ''
+      notify: {
+        is: false,
+        text: ''
+      }
     }
   }
 }).$mount('div#app')    
