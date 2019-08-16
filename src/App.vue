@@ -27,7 +27,7 @@
 
 		<!-- Site content -->
 		<v-content>
-      <v-toolbar color="blue darken-4" dense ref="writetoolbar" class="hidden-print-only">
+      <v-toolbar color="blue darken-4" dense ref="toolbar" class="hidden-print-only">
         <v-menu offset-y>
           <template v-slot:activator="{ on }">
             <v-btn v-on="on" icon><v-icon>mdi-format-text-variant</v-icon></v-btn>
@@ -82,7 +82,6 @@
         <v-btn icon @click="data.blocks.push({ type: 'embed', src: '', src_saved: '', index: data.blocks.length })"><v-icon>mdi-web</v-icon></v-btn>
         <v-btn icon @click="data.blocks.push({ type: 'html', src: '', src_saved: '', index: data.blocks.length })"><v-icon>mdi-language-html5</v-icon></v-btn>
         <v-btn icon @click="data.blocks.push({ type: 'quote', content: '', author: '', src_saved: '', index: data.blocks.length })"><v-icon>mdi-format-quote-close</v-icon></v-btn>
-        <!-- <v-btn icon @click="data.blocks.push({ type: 'icon', src: '', src_saved: '', index: data.blocks.length })"><v-icon>mdi-star</v-icon></v-btn> -->
         <v-btn icon @click="data.blocks.push({ type: 'gap', index: data.blocks.length })"><v-icon>mdi-arrow-expand-vertical</v-icon></v-btn>
         <v-divider vertical inset></v-divider>
         <v-spacer></v-spacer>
@@ -145,19 +144,19 @@
           <v-list dense>
             <v-list-item-group  v-model="data.blocks[current_block.index].format.font">
               <v-list-item value="Roboto">
-                <v-list-item-title style="font-family: 'Roboto'"><v-list-item-title>Aa</v-list-item-title></v-list-item-title>
+                <v-list-item-title style="font-family: 'Roboto'"><v-list-item-title>Sans-serif</v-list-item-title></v-list-item-title>
               </v-list-item>
 
               <v-list-item value="Roboto Slab">
-                <v-list-item-title style="font-family: 'Roboto Slab'"><v-list-item-title>Aa</v-list-item-title></v-list-item-title>
+                <v-list-item-title style="font-family: 'Roboto Slab'"><v-list-item-title>Serif</v-list-item-title></v-list-item-title>
               </v-list-item>
 
               <v-list-item value="Roboto Mono">
-                <v-list-item-title style="font-family: 'Roboto Mono'"><v-list-item-title>Aa</v-list-item-title></v-list-item-title>
+                <v-list-item-title style="font-family: 'Roboto Mono'"><v-list-item-title>Monospace</v-list-item-title></v-list-item-title>
               </v-list-item>
 
               <v-list-item value="Roboto Condensed">
-                <v-list-item-title style="font-family: 'Roboto Condensed'"><v-list-item-title>Aa</v-list-item-title></v-list-item-title>
+                <v-list-item-title style="font-family: 'Roboto Condensed'"><v-list-item-title>Condensed</v-list-item-title></v-list-item-title>
               </v-list-item>
             </v-list-item-group>
           </v-list>
@@ -171,172 +170,215 @@
         <v-btn icon @click="clearFormat(current_block.index)" v-if="current_block.type == 'text' || current_block.type == 'header'"><v-icon>mdi-format-clear</v-icon></v-btn>
       </v-toolbar>
 
-      <v-container id="editor" @click.self="current_block = {}" @mouseover.self="current_hover_block_index = null">
-        <v-layout v-for="(block, index) in data.blocks" :key="index" @click="current_block = block" class="block" align-center justify-center @mouseover="current_hover_block_index = block.index">
-          <v-flex xs11 class="text" v-if="block.type == 'text'">
-            <textarea :rows="block.rows" style="width: 100%;" :class="{ 'body-1': true, 'font-weight-bold': block.format.b, 'font-italic': block.format.i, 'font-underline': block.format.ul, 'font-strikethrough': block.format.str, 'font-overline': block.format.ol }" :style="{ 'text-align': block.format.align, 'font-family': block.format.font + '!important', 'color': block.format.color, 'vertical-align': block.format.just }" type="text" v-model="block.content" placeholder="Paragraph"></textarea>
-          </v-flex>
+      <v-toolbar color="blue darken-4" dense ref="tabs" class="hidden-print-only elevation-0" style="z-index: 3">
+        <v-tabs v-model="tab" background-color="transparent">
+          <v-tab>File</v-tab>
+          <v-tab>Home</v-tab>
+          <v-tabs-slider></v-tabs-slider>
+        </v-tabs>
 
-          <v-flex xs11 class="header1" v-if="block.type == 'header' && block.size == 1">
-            <textarea :rows="block.rows" style="width: 100%;" :class="{ 'display-1': true, 'font-weight-bold': block.format.b, 'font-italic': block.format.i, 'font-underline': block.format.ul, 'font-strikethrough': block.format.str, 'font-overline': block.format.ol }" :style="{ 'text-align': block.format.align, 'font-family': block.format.font + '!important', 'color': block.format.color, 'vertical-align': block.format.just }" type="text" v-model="block.content" placeholder="Header"></textarea>
-          </v-flex>
+      </v-toolbar>
 
-          <v-flex xs11 class="header2" v-if="block.type == 'header' && block.size == 2">
-            <textarea :rows="block.rows" style="width: 100%;" :class="{ 'display-2': true, 'font-weight-bold': block.format.b, 'font-italic': block.format.i, 'font-underline': block.format.ul, 'font-strikethrough': block.format.str, 'font-overline': block.format.ol }" :style="{ 'text-align': block.format.align, 'font-family': block.format.font + '!important', 'color': block.format.color, 'vertical-align': block.format.just }" type="text" v-model="block.content" placeholder="Header"></textarea>
-          </v-flex>
+      <v-toolbar dense ref="toolbar" class="hidden-print-only">
+        <v-tabs-items style="width: 100%;" v-model="tab">
+          <v-tab-item>
+            File
+          </v-tab-item>
 
-          <v-flex xs11 class="header3" v-if="block.type == 'header' && block.size == 3">
-            <textarea :rows="block.rows" style="width: 100%;" :class="{ 'display-3': true, 'font-weight-bold': block.format.b, 'font-italic': block.format.i, 'font-underline': block.format.ul, 'font-strikethrough': block.format.str, 'font-overline': block.format.ol }" :style="{ 'text-align': block.format.align, 'font-family': block.format.font + '!important', 'color': block.format.color, 'vertical-align': block.format.just }" type="text" v-model="block.content" placeholder="Header"></textarea>
-          </v-flex>
-
-          <v-flex xs11 class="header4" v-if="block.type == 'header' && block.size == 4">
-            <textarea :rows="block.rows" style="width: 100%;" :class="{ 'display-4': true, 'font-weight-bold': block.format.b, 'font-italic': block.format.i, 'font-underline': block.format.ul, 'font-strikethrough': block.format.str, 'font-overline': block.format.ol }" :style="{ 'text-align': block.format.align, 'font-family': block.format.font + '!important', 'color': block.format.color, 'vertical-align': block.format.just }" type="text" v-model="block.content" placeholder="Header"></textarea>
-          </v-flex>
-
-          <v-flex xs11 class="quote" v-if="block.type == 'quote'">
-            <div v-if="!block.src_saved">
-              <input type="text" v-model="block.content" placeholder="Content" style="width: 500px; margin-right: 14px;">
-              <input type="text" v-model="block.author" placeholder="Author" style="width: 250px; margin-right: 14px;">
-              <v-btn text color="accent" @click="block.src_saved = true" v-if="block.content">Save</v-btn>
-            </div>
-            <blockquote class="blockquote" v-if="block.src_saved" style="width: 100%;">{{ block.content }}</blockquote>
-            <p class="subtitle-1" v-if="block.src_saved" style="text-align: right; margin-right: 100px;">— {{ block.author }}</p>
-          </v-flex>
-
-          <v-flex xs11 class="image" v-if="block.type == 'image'">
-            <div v-if="!block.src_saved">
-              <input type="text" v-model="block.src" placeholder="URL" style="width: 500px; margin-right: 14px;">
-              <input type="text" v-model="block.alt" placeholder="Caption" style="width: 250px; margin-right: 14px;">
-              <v-btn text color="accent" @click="block.src_saved = true" v-if="block.src">Save</v-btn>
-            </div>
-            <img v-if="block.src_saved" :src="block.src" :alt="block.alt" style="max-width: calc(100vw - 28%);">
-            <p v-if="block.src_saved" class="caption" style="text-align: right; margin-right: 100px;">{{ block.alt }}</p>
-          </v-flex>
-
-          <v-flex xs11 class="icon" v-if="block.type == 'icon'">
-            <div v-if="!block.src_saved">
-              <input type="text" v-model="block.src" placeholder="Icon title from materialdesignicons.com" style="width: 500px; margin-right: 14px;">
-              <v-btn text color="accent" @click="block.src_saved = true" v-if="block.src">Save</v-btn>
-            </div>
-            <v-icon v-if="block.src_saved">mdi-{{ block.src }}</v-icon>
-          </v-flex>
-
-          <v-flex xs11 class="nl" v-if="block.type == 'nl'">
-            <ul class="mb-3" style="list-style-type: none;">
-              <li v-for="(item, index) in block.list" :key="index">
-                <input type="text" v-model="block.list[index]" placeholder="List item" style="width: 100%;">
-              </li>
-            </ul>
-          </v-flex>
-
-          <v-flex xs11 class="ul" v-if="block.type == 'ul'">
-            <ul class="mb-3">
-              <li v-for="(item, index) in block.list" :key="index">
-                <input type="text" v-model="block.list[index]" placeholder="List item" style="width: 100%;">
-              </li>
-            </ul>
-          </v-flex>
-
-          <v-flex xs11 class="ol" v-if="block.type == 'ol'">
-            <ol class="mb-3">
-              <li v-for="(item, index) in block.list" :key="index">
-                <input type="text" v-model="block.list[index]" placeholder="List item" style="width: 100%;">
-              </li>
-            </ol>
-          </v-flex>
-
-          <v-flex xs11 class="embed" v-if="block.type == 'embed'">
-            <div v-if="!block.src_saved">
-              <input type="text" v-model="block.src" placeholder="URL" style="width: 750px; margin-right: 14px;">
-              <v-btn text color="accent" @click="block.src_saved = true" v-if="block.src">Save</v-btn>
-            </div>
-            <embed v-if="block.src_saved" :src="block.src" :style="{ 'width': '100%', 'height': block.size + 'px' }">
-          </v-flex>
-
-          <v-flex xs11 class="html" v-if="block.type == 'html'">
-            <div v-if="!block.src_saved">
-              <textarea type="text" v-model="block.src" placeholder="Source" style="width: 750px; margin-right: 14px;"></textarea>
-              <v-btn text color="accent" @click="block.src_saved = true" v-if="block.src">Save</v-btn>
-            </div>
-            <iframe v-if="block.src_saved" :srcdoc="block.src" style="width: 100%;"></iframe>
-          </v-flex>
-
-          <v-flex xs11 :class="{ 'divider': block.index != current_hover_block_index, 'divider-hover': block.index == current_hover_block_index }" v-if="block.type == 'divider'">
-            <v-divider></v-divider>
-          </v-flex>
-
-          <v-flex xs11 class="gap" v-if="block.type == 'gap'">
-            <div style="height: 45px;"></div>
-          </v-flex>
-
-          <v-flex xs11 class="code" v-if="block.type == 'code'">
-            <kbd><input type="text" v-model="block.content" placeholder="Code snippet"></kbd>
-          </v-flex>
-
-          <v-flex xs1 style="text-align: center;" class="hidden-print-only">
-            <v-menu offset-y v-if="current_hover_block_index == block.index" :close-on-content-click="false">
+          <v-tab-item>
+            <v-menu offset-y>
               <template v-slot:activator="{ on }">
-                <v-btn v-on="on" icon color="grey darken-2" v-if="current_hover_block_index == block.index"><v-icon>mdi-dots-vertical</v-icon></v-btn>
+                <v-btn text icon v-on="on"><v-icon>mdi-clipboard-outline</v-icon></v-btn>
               </template>
               <v-list dense>
-                <v-list-item @click="moveUp(block, index)">
-                  <v-list-item-title><v-icon>mdi-chevron-up</v-icon></v-list-item-title>
+                <v-list-item @click="document.execCommand('cut')">
+                  <v-list-item-icon><v-icon>mdi-content-cut</v-icon></v-list-item-icon>
+                  <v-list-item-title>Cut</v-list-item-title>
                 </v-list-item>
-
-                <v-list-item @click="deleteBlock(block.index)" color="red">
-                  <v-list-item-title><v-icon>mdi-delete</v-icon></v-list-item-title>
+                <v-list-item @click="document.execCommand('copy')">
+                  <v-list-item-icon><v-icon>mdi-content-copy</v-icon></v-list-item-icon>
+                  <v-list-item-title>Copy</v-list-item-title>
                 </v-list-item>
-
-                <v-list-item @click="moveDown(block, index)">
-                  <v-list-item-title><v-icon>mdi-chevron-down</v-icon></v-list-item-title>
+                <v-list-item @click="document.execCommand('paste')">
+                  <v-list-item-icon><v-icon>mdi-content-paste</v-icon></v-list-item-icon>
+                  <v-list-item-title>Paste</v-list-item-title>
                 </v-list-item>
-
-                <v-list-item @click="addListItem(index)" v-if="block.type == 'ul' || block.type == 'ol' || block.type == 'nl'">
-                  <v-list-item-title><v-icon>mdi-plus</v-icon></v-list-item-title>
-                </v-list-item>
-
-                <v-list-item @click="removeListItem(index)" v-if="block.type == 'ul' || block.type == 'ol' || block.type == 'nl'">
-                  <v-list-item-title><v-icon>mdi-minus</v-icon></v-list-item-title>
-                </v-list-item>
-
-                <v-list-item @click="block.src_saved = false" v-if="(block.type == 'image' || 'embed') && block.src_saved">
-                  <v-list-item-title><v-icon>mdi-pencil</v-icon></v-list-item-title>
-                </v-list-item>
-
-                <v-list-item @click="block.size == 4 ? null : block.size += 1" v-if="block.type == 'header'" :disabled="block.size == 4">
-                  <v-list-item-title><v-icon :class="{ 'grey--text': block.size == 4, 'white--text': block.size != 4 }">mdi-format-font-size-increase</v-icon></v-list-item-title>
-                </v-list-item>
-
-                <v-list-item @click="block.size == 1 ? null : block.size -= 1" v-if="block.type == 'header'" :disabled="block.size == 1">
-                  <v-list-item-title><v-icon :class="{ 'grey--text': block.size == 1, 'white--text': block.size != 1 }">mdi-format-font-size-decrease</v-icon></v-list-item-title>
-                </v-list-item>
-
-                <v-list-item @click="block.rows += 1" v-if="block.type == 'header' || block.type == 'text'">
-                  <v-list-item-title><v-icon>mdi-plus</v-icon></v-list-item-title>
-                </v-list-item>
-
-                <v-list-item @click="block.rows -= 1" v-if="block.type == 'header' || block.type == 'text'">
-                  <v-list-item-title><v-icon>mdi-minus</v-icon></v-list-item-title>
-                </v-list-item>
-
-                <v-menu offset-x left v-if="block.type == 'embed' || block.type == 'html'" :close-on-content-click="false">
-                  <template v-slot:activator="{ on }">
-                    <v-list-item v-if="block.type == 'embed' || block.type == 'html'" v-on="on" icon><v-icon>mdi-resize</v-icon></v-list-item>
-                  </template>
-                  <v-list dense>
-                    <v-slider max="750" style="max-width: 500px; min-width: 200px; padding: 20px 40px 0px 40px;" v-model="data.blocks[current_block.index].size"></v-slider>
-                  </v-list>
-                </v-menu>
               </v-list>
             </v-menu>
-          </v-flex>
-        </v-layout>
-      </v-container>
+            <v-select :items="fonts" v-model="data.blocks[current_block.index].format.font" menu-props="offsetY"></v-select>
+          </v-tab-item>
+        </v-tabs-items>
+      </v-toolbar>
+
+      <div class="scrollable-shell">
+        <v-container style="width: 816px;" width="816" height="1056" id="editor" @click.self="current_block = {}" @mouseover.self="current_hover_block_index = null">
+          <v-layout @contextmenu.prevent="showBlockMenu($event, block, index)" v-for="(block, index) in data.blocks" :key="index" @click="current_block = block" class="block" align-center justify-center @mouseover="current_hover_block_index = block.index">
+            <v-flex xs12 class="text" v-if="block.type == 'text'">
+              <textarea :rows="block.rows" style="width: 100%;" :class="{ 'body-1': true, 'font-weight-bold': block.format.b, 'font-italic': block.format.i, 'font-underline': block.format.ul, 'font-strikethrough': block.format.str, 'font-overline': block.format.ol }" :style="{ 'text-align': block.format.align, 'font-family': block.format.font + '!important', 'color': block.format.color, 'vertical-align': block.format.just }" type="text" v-model="block.content" placeholder="Paragraph"></textarea>
+            </v-flex>
+
+            <v-flex xs12 class="header1" v-if="block.type == 'header' && block.size == 1">
+              <textarea :rows="block.rows" style="width: 100%;" :class="{ 'display-1': true, 'font-weight-bold': block.format.b, 'font-italic': block.format.i, 'font-underline': block.format.ul, 'font-strikethrough': block.format.str, 'font-overline': block.format.ol }" :style="{ 'text-align': block.format.align, 'font-family': block.format.font + '!important', 'color': block.format.color, 'vertical-align': block.format.just }" type="text" v-model="block.content" placeholder="Header"></textarea>
+            </v-flex>
+
+            <v-flex xs12 class="header2" v-if="block.type == 'header' && block.size == 2">
+              <textarea :rows="block.rows" style="width: 100%;" :class="{ 'display-2': true, 'font-weight-bold': block.format.b, 'font-italic': block.format.i, 'font-underline': block.format.ul, 'font-strikethrough': block.format.str, 'font-overline': block.format.ol }" :style="{ 'text-align': block.format.align, 'font-family': block.format.font + '!important', 'color': block.format.color, 'vertical-align': block.format.just }" type="text" v-model="block.content" placeholder="Header"></textarea>
+            </v-flex>
+
+            <v-flex xs12 class="header3" v-if="block.type == 'header' && block.size == 3">
+              <textarea :rows="block.rows" style="width: 100%;" :class="{ 'display-3': true, 'font-weight-bold': block.format.b, 'font-italic': block.format.i, 'font-underline': block.format.ul, 'font-strikethrough': block.format.str, 'font-overline': block.format.ol }" :style="{ 'text-align': block.format.align, 'font-family': block.format.font + '!important', 'color': block.format.color, 'vertical-align': block.format.just }" type="text" v-model="block.content" placeholder="Header"></textarea>
+            </v-flex>
+
+            <v-flex xs12 class="header4" v-if="block.type == 'header' && block.size == 4">
+              <textarea :rows="block.rows" style="width: 100%;" :class="{ 'display-4': true, 'font-weight-bold': block.format.b, 'font-italic': block.format.i, 'font-underline': block.format.ul, 'font-strikethrough': block.format.str, 'font-overline': block.format.ol }" :style="{ 'text-align': block.format.align, 'font-family': block.format.font + '!important', 'color': block.format.color, 'vertical-align': block.format.just }" type="text" v-model="block.content" placeholder="Header"></textarea>
+            </v-flex>
+
+            <v-flex xs12 class="quote" v-if="block.type == 'quote'">
+              <div v-if="!block.src_saved">
+                <input type="text" v-model="block.content" placeholder="Content" style="width: 500px; margin-right: 14px;">
+                <input type="text" v-model="block.author" placeholder="Author" style="width: 250px; margin-right: 14px;">
+                <v-btn text color="accent" @click="block.src_saved = true" v-if="block.content">Save</v-btn>
+              </div>
+              <blockquote class="blockquote" v-if="block.src_saved" style="width: 100%;">{{ block.content }}</blockquote>
+              <p class="subtitle-1" v-if="block.src_saved" style="text-align: right; margin-right: 100px;">— {{ block.author }}</p>
+            </v-flex>
+
+            <v-flex xs12 class="image" v-if="block.type == 'image'">
+              <div v-if="!block.src_saved">
+                <input type="text" v-model="block.src" placeholder="URL" style="width: 500px; margin-right: 14px;">
+                <input type="text" v-model="block.alt" placeholder="Caption" style="width: 250px; margin-right: 14px;">
+                <v-btn text color="accent" @click="block.src_saved = true" v-if="block.src">Save</v-btn>
+              </div>
+              <img v-if="block.src_saved" :src="block.src" :alt="block.alt" style="max-width: calc(100vw - 28%);">
+              <p v-if="block.src_saved" class="caption" style="text-align: right; margin-right: 100px;">{{ block.alt }}</p>
+            </v-flex>
+
+            <v-flex xs12 class="nl" v-if="block.type == 'nl'">
+              <ul class="mb-3" style="list-style-type: none;">
+                <li v-for="(item, index) in block.list" :key="index">
+                  <input type="text" v-model="block.list[index]" placeholder="List item" style="width: 100%;">
+                </li>
+              </ul>
+            </v-flex>
+
+            <v-flex xs12 class="ul" v-if="block.type == 'ul'">
+              <ul class="mb-3">
+                <li v-for="(item, index) in block.list" :key="index">
+                  <input type="text" v-model="block.list[index]" placeholder="List item" style="width: 100%;">
+                </li>
+              </ul>
+            </v-flex>
+
+            <v-flex xs12 class="ol" v-if="block.type == 'ol'">
+              <ol class="mb-3">
+                <li v-for="(item, index) in block.list" :key="index">
+                  <input type="text" v-model="block.list[index]" placeholder="List item" style="width: 100%;">
+                </li>
+              </ol>
+            </v-flex>
+
+            <v-flex xs12 class="embed" v-if="block.type == 'embed'">
+              <div v-if="!block.src_saved">
+                <input type="text" v-model="block.src" placeholder="URL" style="width: 750px; margin-right: 14px;">
+                <v-btn text color="accent" @click="block.src_saved = true" v-if="block.src">Save</v-btn>
+              </div>
+              <embed v-if="block.src_saved" :src="block.src" :style="{ 'width': '100%', 'height': block.size + 'px' }">
+            </v-flex>
+
+            <v-flex xs12 class="html" v-if="block.type == 'html'">
+              <div v-if="!block.src_saved">
+                <textarea type="text" v-model="block.src" placeholder="Source" style="width: 750px; margin-right: 14px;"></textarea>
+                <v-btn text color="accent" @click="block.src_saved = true" v-if="block.src">Save</v-btn>
+              </div>
+              <iframe v-if="block.src_saved" :srcdoc="block.src" style="width: 100%;"></iframe>
+            </v-flex>
+
+            <v-flex xs12 :class="{ 'divider': block.index != current_hover_block_index, 'divider-hover': block.index == current_hover_block_index }" v-if="block.type == 'divider'">
+              <v-divider></v-divider>
+            </v-flex>
+
+            <v-flex xs12 class="gap" v-if="block.type == 'gap'">
+              <div style="height: 45px;"></div>
+            </v-flex>
+
+            <v-flex xs12 class="code" v-if="block.type == 'code'">
+              <kbd><input type="text" v-model="block.content" placeholder="Code snippet"></kbd>
+            </v-flex>
+          </v-layout>
+        </v-container>
+        <v-card class="mx-auto"></v-card>
+      </div>
+
+      <v-menu v-model="block_menu.open" offset-y :position-x="block_menu.x" :position-y="block_menu.y" absolute>
+        <v-list dense>
+          <v-list-item @click="moveUp(block_menu.data, block_menu.index)">
+            <v-list-item-icon><v-icon>mdi-chevron-up</v-icon></v-list-item-icon>
+            <v-list-item-title>Move up</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item @click="deleteBlock(block_menu.index)" color="red">
+            <v-list-item-icon><v-icon class="red--text">mdi-delete</v-icon></v-list-item-icon>
+            <v-list-item-title class="red--text">Delete block</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item @click="moveDown(block_menu.data, block_menu.index)">
+            <v-list-item-icon><v-icon>mdi-chevron-down</v-icon></v-list-item-icon>
+            <v-list-item-title>Move down</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item @click="addListItem(block_menu.index)" v-if="block_menu.data.type == 'ul' || block_menu.data.type == 'ol' || block_menu.data.type == 'nl'">
+            <v-list-item-icon><v-icon>mdi-plus</v-icon></v-list-item-icon>
+            <v-list-item-title>Add item</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item @click="removeListItem(block_menu.index)" v-if="block_menu.data.type == 'ul' || block_menu.data.type == 'ol' || block_menu.data.type == 'nl'">
+            <v-list-item-icon><v-icon>mdi-minus</v-icon></v-list-item-icon>
+            <v-list-item-title>Remove item</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item @click="block_menu.data.src_saved = false" v-if="(block_menu.data.type == 'image' || 'embed') && block_menu.data.src_saved">
+            <v-list-item-icon><v-icon>mdi-pencil</v-icon></v-list-item-icon>
+            <v-list-item-title>Edit data</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item @click="block_menu.data.size == 4 ? null : block_menu.data.size += 1" v-if="block_menu.data.type == 'header'" :disabled="block_menu.data.size == 4">
+            <v-list-item-icon><v-icon :class="{ 'grey--text': block_menu.data.size == 4, 'white--text': block_menu.data.size != 4 }">mdi-format-font-size-increase</v-icon></v-list-item-icon>
+            <v-list-item-title :class="{ 'grey--text': block_menu.data.size == 4, 'white--text': block_menu.data.size != 4 }">Increase size</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item @click="block_menu.data.size == 1 ? null : block_menu.data.size -= 1" v-if="block_menu.data.type == 'header'" :disabled="block_menu.data.size == 1">
+            <v-list-item-icon><v-icon :class="{ 'grey--text': block_menu.data.size == 1, 'white--text': block_menu.data.size != 1 }">mdi-format-font-size-decrease</v-icon></v-list-item-icon>
+            <v-list-item-title :class="{ 'grey--text': block_menu.data.size == 1, 'white--text': block_menu.data.size != 1 }">Decrease size</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item @click="block_menu.data.rows += 1" v-if="block_menu.data.type == 'header' || block_menu.data.type == 'text'">
+            <v-list-item-icon><v-icon>mdi-plus</v-icon></v-list-item-icon>
+            <v-list-item-title>Increase height</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item @click="block_menu.data.rows -= 1" v-if="block_menu.data.type == 'header' || block_menu.data.type == 'text'">
+            <v-list-item-icon><v-icon>mdi-minus</v-icon></v-list-item-icon>
+            <v-list-item-title>Decrease height</v-list-item-title>
+          </v-list-item>
+
+          <v-menu offset-x left v-if="block_menu.data.type == 'embed' || block_menu.data.type == 'html'" :close-on-content-click="false">
+            <template v-slot:activator="{ on }">
+              <v-list-item v-if="block_menu.data.type == 'embed' || block_menu.data.type == 'html'" v-on="on" icon>
+                <v-list-item-icon><v-icon>mdi-resize</v-icon></v-list-item-icon>
+                <v-list-item-title>Resize</v-list-item-title>
+              </v-list-item>
+            </template>
+            <v-list dense>
+              <v-slider max="750" style="max-width: 500px; min-width: 200px; padding: 20px 40px 0px 40px;" v-model="data.blocks[current_block.index].size"></v-slider>
+            </v-list>
+          </v-menu>
+        </v-list>
+      </v-menu>
 
       <v-dialog v-model="open_dialog" max-width="500" class="hidden-print-only">
         <v-card>
           <v-card-title>
-            <span>Open a Document</span>
+            <span>Open</span>
             <v-spacer></v-spacer>
             <v-btn icon @click="open_dialog = false" class="dialog-close-btn">
               <v-icon>mdi-close</v-icon>
@@ -358,7 +400,7 @@
       <v-dialog v-model="print_dialog" max-width="500" class="hidden-print-only">
         <v-card>
           <v-card-title>
-            <span><v-icon>mdi-printer</v-icon> Print</span>
+            <span>Print</span>
             <v-spacer></v-spacer>
             <v-btn icon @click="print_dialog = false" class="dialog-close-btn">
               <v-icon>mdi-close</v-icon>
@@ -367,12 +409,13 @@
 
           <v-card-text>
             <v-list dense rounded>
-              <v-list-item-group v-model="printing.printer">
-                <v-list-item v-for="(printer, index) in printers" :key="index" :value="printer.name">
+              <v-list-item-group v-model="printer">
+                <v-list-item v-for="(printer, index) in printers" :key="index" :value="printer">
                   <v-list-item-title>{{ printer.name }}</v-list-item-title>
                 </v-list-item>
               </v-list-item-group>
             </v-list>
+            <p>{{ printer }}</p>
           </v-card-text>
 
           <v-card-actions>
@@ -403,9 +446,10 @@
 </template>
 
 <script>
-const remote = require('electron').remote
+import { ipcRenderer, remote } from 'electron'
 import { saveAs } from 'file-saver'
-import { setTimeout } from 'timers';
+import { setTimeout } from 'timers'
+import fs from 'fs'
 
 export default {
 	name: 'Write',
@@ -423,14 +467,24 @@ export default {
           { type: 'text', content: '', format: { b: false, i: false, ul: false, str: false, ol: false, align: 'left', font: 'Roboto', color: '#FFFFFF', just: 'top' }, index: 1, rows: 3 }
         ]
       },
-      current_block: {},
+      current_block: { type: 'header', content: '', format: { b: false, i: false, ul: false, str: false, ol: false, align: 'left', font: 'Roboto', color: '#FFFFFF', just: 'top' }, index: 0, size: 1, rows: 1 },
       current_hover_block_index: null,
       uploaded_file: undefined,
       contents: remote.getCurrentWebContents(),
       printers: [],
-      printing: {
-        printer: ''
-      }
+      printer: {},
+      block_menu: {
+        open: false,
+        data: {}
+      },
+      tab: 1,
+      document: document,
+      fonts: [
+        { text: 'Sans-serif', value: 'Roboto' },
+        { text: 'Serif', value: 'Roboto Slab' },
+        { text: 'Monospace', value: 'Roboto Mono' },
+        { text: 'Condensed', value: 'Roboto Condensed' }
+      ]
 		}
 	},
   methods: {
@@ -473,7 +527,7 @@ export default {
           this.contents.print({
             silent: true,
             printBackground: false,
-            deviceName: this.printing.printer.name
+            deviceName: this.printer.name
           }, () => {
             this.$notify('Document printed successfully.')
           })
@@ -535,28 +589,29 @@ export default {
     },
     clearFormat(index) {
       this.data.blocks[index].format = { b: false, i: false, ul: false, str: false, ol: false, align: 'left', font: 'Roboto', color: '#FFFFFF', just: 'top' }
+    },
+    showBlockMenu(e, data, index) {
+      this.block_menu = {
+        x: e.clientX,
+        y: e.clientY,
+        open: true,
+        data: data,
+        index: index
+      }
     }
   },
   mounted() {
-    window.onscroll = function() { checkIfToolbarStuck() }
-    var navbar = this.$refs.writetoolbar.$el
-    var sticky = navbar.offsetTop
-    function checkIfToolbarStuck() {
-      if (window.pageYOffset >= sticky) {
-        navbar.classList.add('sticky-toolbar')
-      } else {
-        navbar.classList.remove('sticky-toolbar')
-      }
-    }
-
     this.printers = this.contents.getPrinters()
+  },
+  created() {
+    ipcRenderer.on('update', (event, text) => {
+      this.$notify(text)
+    })
   }
 }
 </script>
 
 <style>
-/* Scrollbar */
-
 /* width */
 ::-webkit-scrollbar {
   width: 8px;
@@ -564,24 +619,16 @@ export default {
 }
 
 /* Track */
-::-webkit-scrollbar-track {
-  background: rgb(33, 33, 33);
-}
+::-webkit-scrollbar-track { background: rgb(33, 33, 33); }
 
 /* Handle */
-::-webkit-scrollbar-thumb {
-  background: rgb(100, 100, 100);
-}
+::-webkit-scrollbar-thumb { background: rgb(100, 100, 100); }
 
 /* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: rgb(60, 60, 60);
-}
+::-webkit-scrollbar-thumb:hover { background: rgb(60, 60, 60); }
 
 /* Corner */
-::-webkit-scrollbar-corner {
-  background: rgb(33, 33, 33);
-}
+::-webkit-scrollbar-corner { background: rgb(33, 33, 33); }
 
 html {
   overflow-y: auto !important;
@@ -593,9 +640,7 @@ html {
   user-select: none;
 }
 
-.toolbar-icon {
-  border-radius: 100px;
-}
+.toolbar-icon { border-radius: 100px; }
 
 .centralize {
   margin: 0;
@@ -606,71 +651,50 @@ html {
 	text-align: center;
 }
 
-.v-system-bar.blue.darken-4.v-system-bar--fixed.v-system-bar--window.theme--dark {
-  padding: 0px 0px 0px 8px !important;
-}
+.v-system-bar.v-system-bar--fixed.v-system-bar--window { padding: 0px 0px 0px 8px !important; }
 
 @media screen {
-  div#editor {
-    margin-top: 16px;
-  }
+  div#editor { margin-top: 16px; }
 
-  input.doc-title::placeholder {
-    color: #616161;
-  }
-}
+  input.doc-title::placeholder { color: #616161; }
 
-@media print {
-  ::-webkit-input-placeholder {
-    color: transparent;
+  div.scrollable-shell {
+    height: calc(100vh - 80px);
+    overflow: auto;
   }
 }
 
-.font-underline {
-  text-decoration: underline;
-}
+@media print { ::-webkit-input-placeholder { color: transparent; } }
 
-.font-strikethrough {
-  text-decoration: line-through;
-}
+.font-underline { text-decoration: underline; }
 
-.font-overline {
-  text-decoration: overline;
-}
+.font-strikethrough { text-decoration: line-through; }
 
-* {
-  outline: none;
-}
+.font-overline { text-decoration: overline; }
+
+* { outline: none; }
 
 .v-btn-toggle > .v-btn.v-btn {
   border-style: none !important;
   border-radius: 48px !important;
 }
 
-iframe {
-  border: none !important;
-}
+iframe { border: none !important; }
 
-.theme--dark.v-btn:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) {
-  background: none !important;
-}
+.theme--dark.v-btn:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) { background: none !important; }
 
 .block {
   padding: 14px;
   border-radius: 6px;
 }
 
-.block:hover {
-  background-color: #343434;
-}
+.block:hover { background-color: #343434; }
 
-.v-menu__content {
-  background-color: #424242;
-}
+.v-menu__content { background-color: #424242; }
 
-.v-menu--inline {
-  display: none !important;
-}
+.v-toolbar__content { padding: 4px; }
+
+.v-menu--inline { display: none !important; }
 
 .divider {
   position: relative;
@@ -685,25 +709,15 @@ iframe {
   bottom: +18px;
 }
 
-textarea {
-  resize: none;
-}
+textarea { resize: none; }
 
-.display-1 {
-  padding: 8px 0px 8px 0px;
-}
+.display-1 { padding: 8px 0px 8px 0px; }
 
-.display-2 {
-  line-height: 3.6rem;
-}
+.display-2 { line-height: 3.6rem; }
 
-.display-3 {
-  line-height: 4.5rem;
-}
+.display-3 { line-height: 4.5rem; }
 
-.display-4 {
-  line-height: 7.15rem;
-}
+.display-4 { line-height: 7.15rem; }
 
 .sticky-toolbar {
   position: fixed;

@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import {
   createProtocol,
@@ -65,7 +65,8 @@ app.on('ready', async () => {
     }
   }
   createWindow()
-  autoUpdater.checkForUpdatesAndNotify()
+  autoUpdater.checkForUpdates()
+  win.webContents.send('update', 'Updating...')
 })
 
 // Exit cleanly on request from parent process in development mode.
@@ -82,3 +83,28 @@ if (isDevelopment) {
     })
   }
 }
+
+autoUpdater.on('checking-for-update', () => {
+  win.webContents.send('update', 'checking-for-updates')
+})
+
+autoUpdater.on('update-available', info => {
+  win.webContents.send('update', 'update-available')
+})
+
+autoUpdater.on('update-not-available', info => {
+  win.webContents.send('update', 'update-not-available')
+})
+
+autoUpdater.on('error', err => {
+  win.webContents.send('update', 'error')
+})
+
+autoUpdater.on('download-progress', progressObj => {
+  win.webContents.send('update', 'download-progress')
+})
+
+autoUpdater.on('update-downloaded', info => {
+  win.webContents.send('update', 'update-downloaded')
+  autoUpdater.quitAndInstall()
+})
