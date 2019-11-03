@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcMain } from 'electron'
+import { app, protocol, BrowserWindow } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import {
   createProtocol,
@@ -14,9 +14,9 @@ let win
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true, standard: true } }])
-function createWindow () {
+function createWindow() {
   // Create the browser window.
-  win = new BrowserWindow({ width: 1300, height: 800, titleBarStyle: 'hiddenInset', frame: false, icon: '/build/icon.png', webPreferences: {
+  win = new BrowserWindow({ width: 350, height: 475, titleBarStyle: 'hiddenInset', frame: false, icon: '/build/icon.png', webPreferences: {
     nodeIntegration: true
   } })
 
@@ -27,7 +27,7 @@ function createWindow () {
   } else {
     createProtocol('app')
     // Load the index.html when not in development
-    win.loadURL('app://./index.html')
+    win.loadURL(`app://${_dirname}/index.html`)
   }
 
   win.on('closed', () => {

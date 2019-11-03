@@ -44,7 +44,8 @@ new Vue({
       notify: {
         is: false,
         text: ''
-      }
+      },
+      auto_update: true
     }
   }
 }).$mount('div#app')    
