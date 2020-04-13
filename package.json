@@ -1,12 +1,8 @@
 {
-  "name": "Write",
-  "version": "0.0.2",
+  "name": "new_write",
+  "version": "0.1.0",
   "private": true,
-  "description": "A lightweight, yet powerful word processor.",
-  "author": "Paradigm Development, Inc.",
-  "repository": "github:Paradigm-Dev/write-client",
   "scripts": {
-    "release": "vue-cli-service electron:build --publish always --win",
     "build": "vue-cli-service electron:build",
     "serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
@@ -14,18 +10,31 @@
   },
   "main": "background.js",
   "dependencies": {
-    "@mdi/font": "^3.8.95",
-    "core-js": "^2.6.5",
-    "electron-updater": "^4.1.2",
-    "file-saver": "^2.0.2",
+    "@mdi/font": "^4.6.95",
+    "core-js": "^3.3.2",
+    "tiptap": "^1.26.4",
+    "tiptap-extensions": "^1.28.4",
     "vue": "^2.6.10",
-    "vuetify": "^2.0.15"
+    "vuetify": "^2.1.12"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.11.0",
-    "@vue/cli-service": "^3.11.0",
-    "electron": "^5.0.10",
-    "vue-cli-plugin-electron-builder": "^1.4.0",
-    "vue-template-compiler": "^2.6.10"
-  }
+    "@vue/cli-plugin-babel": "^4.0.0",
+    "@vue/cli-service": "^4.1.1",
+    "electron": "^6.0.0",
+    "sass": "^1.19.0",
+    "sass-loader": "^8.0.0",
+    "vue-cli-plugin-electron-builder": "^1.4.2",
+    "vue-cli-plugin-vuetify": "^2.0.2",
+    "vue-template-compiler": "^2.6.10",
+    "vuetify-loader": "^1.4.2"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ]
 }

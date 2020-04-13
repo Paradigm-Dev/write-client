@@ -1,7 +1,6 @@
 'use strict'
 
 import { app, protocol, BrowserWindow } from 'electron'
-import { autoUpdater } from 'electron-updater'
 import {
   createProtocol,
   installVueDevtools
@@ -14,9 +13,10 @@ let win
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true, standard: true } }])
-function createWindow() {
+
+function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({ width: 350, height: 475, titleBarStyle: 'hiddenInset', frame: false, icon: '/build/icon.png', webPreferences: {
+  win = new BrowserWindow({ width: 1300, height: 800, titleBarStyle: 'hiddenInset', frame: false, icon: '/build/icon.png', webPreferences: {
     nodeIntegration: true
   } })
 
@@ -27,7 +27,7 @@ function createWindow() {
   } else {
     createProtocol('app')
     // Load the index.html when not in development
-    win.loadURL(`app://${_dirname}/index.html`)
+    win.loadURL('app://./index.html')
   }
 
   win.on('closed', () => {
@@ -58,15 +58,19 @@ app.on('activate', () => {
 app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
-    try {
-      await installVueDevtools()
-    } catch (e) {
-      console.error('Vue Devtools failed to install:', e.toString())
-    }
+    // Devtools extensions are broken in Electron 6.0.0 and greater
+    // See https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/378 for more info
+    // Electron will not launch with Devtools extensions installed on Windows 10 with dark mode
+    // If you are not using Windows 10 dark mode, you may uncomment these lines
+    // In addition, if the linked issue is closed, you can upgrade electron and uncomment these lines
+    // try {
+    //   await installVueDevtools()
+    // } catch (e) {
+    //   console.error('Vue Devtools failed to install:', e.toString())
+    // }
+
   }
   createWindow()
-  autoUpdater.checkForUpdates()
-  win.webContents.send('update', 'Updating...')
 })
 
 // Exit cleanly on request from parent process in development mode.
@@ -83,28 +87,3 @@ if (isDevelopment) {
     })
   }
 }
-
-autoUpdater.on('checking-for-update', () => {
-  win.webContents.send('update', 'checking-for-updates')
-})
-
-autoUpdater.on('update-available', info => {
-  win.webContents.send('update', 'update-available')
-})
-
-autoUpdater.on('update-not-available', info => {
-  win.webContents.send('update', 'update-not-available')
-})
-
-autoUpdater.on('error', err => {
-  win.webContents.send('update', 'error')
-})
-
-autoUpdater.on('download-progress', progressObj => {
-  win.webContents.send('update', 'download-progress')
-})
-
-autoUpdater.on('update-downloaded', info => {
-  win.webContents.send('update', 'update-downloaded')
-  autoUpdater.quitAndInstall()
-})

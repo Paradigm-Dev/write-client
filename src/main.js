@@ -1,51 +1,47 @@
 import Vue from 'vue'
-import Vuetify from 'vuetify'
-import 'vuetify/dist/vuetify.min.css'
-import '@mdi/font/css/materialdesignicons.css'
 import App from './App.vue'
+import vuetify from './vuetify'
+import { remote } from 'electron'
 
-const opts = {
-  icons: {
-    iconfont: 'mdi'
-  },
-  theme: {
-    dark: true,
-    themes: {
-      dark: {
-        primary: '#1976D2',
-        secondary: '#424242',
-        accent: '#82B1FF',
-        error: '#FF5252',
-        info: '#2196F3',
-        success: '#4CAF50',
-        warning: '#FFC107'
-      }
-    }
-  }
-}
-
-Vue.use(Vuetify)
+Vue.config.productionTip = false
 
 Vue.mixin({
   methods: {
-    $notify(text) {
-      this.$root.notify.text = text
-      this.$root.notify.is = true
-      setTimeout(() => { this.$root.notify.is = false }, 3000)
+    close() {
+      this.$root.win.close()
+    },
+    maximize() {
+      this.$root.win.maximize()
+      this.$root.maximized = remote.getCurrentWindow().isMaximized()
+    },
+    unmaximize() {
+      this.$root.win.unmaximize()
+      this.$root.maximized = remote.getCurrentWindow().isMaximized()
+    },
+    minimize() {
+      this.$root.win.minimize()
+    },
+    reload() {
+      location.reload()
     }
   }
 })
 
 new Vue({
-  render: function(h) { return h(App) },
-  vuetify: new Vuetify(opts),
+  vuetify,
+  render: h => h(App),
   data() {
     return {
       notify: {
         is: false,
         text: ''
       },
-      auto_update: true
+      win: remote.getCurrentWindow(),
+      maximized: remote.getCurrentWindow().isMaximized(),
+      contents: remote.getCurrentWebContents(),
+      file: {
+        title: ''
+      }
     }
   }
-}).$mount('div#app')    
+}).$mount('#app')
