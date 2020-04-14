@@ -1,0 +1,31 @@
+{
+  "name": "Write",
+  "version": "0.0.2",
+  "private": true,
+  "description": "A lightweight, yet powerful word processor.",
+  "author": "Paradigm Development, Inc.",
+  "repository": "github:Paradigm-Dev/write-client",
+  "scripts": {
+    "release": "vue-cli-service electron:build --publish always --win",
+    "build": "vue-cli-service electron:build",
+    "serve": "vue-cli-service electron:serve",
+    "postinstall": "electron-builder install-app-deps",
+    "postuninstall": "electron-builder install-app-deps"
+  },
+  "main": "background.js",
+  "dependencies": {
+    "@mdi/font": "^3.8.95",
+    "core-js": "^2.6.11",
+    "electron-updater": "^4.2.5",
+    "file-saver": "^2.0.2",
+    "vue": "^2.6.11",
+    "vuetify": "^2.2.21"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.12.1",
+    "@vue/cli-service": "^4.3.1",
+    "electron": "^5.0.13",
+    "vue-cli-plugin-electron-builder": "^1.4.6",
+    "vue-template-compiler": "^2.6.11"
+  }
+}

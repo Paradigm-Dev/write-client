@@ -38,10 +38,7 @@ new Vue({
       },
       win: remote.getCurrentWindow(),
       maximized: remote.getCurrentWindow().isMaximized(),
-      contents: remote.getCurrentWebContents(),
-      file: {
-        title: ''
-      }
+      contents: remote.getCurrentWebContents()
     }
   }
 }).$mount('#app')

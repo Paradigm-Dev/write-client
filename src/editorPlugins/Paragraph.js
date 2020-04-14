@@ -1,4 +1,4 @@
-import { toggleMark } from 'tiptap-commands'
+import { updateMark } from 'tiptap-commands'
 import { Mark } from 'tiptap'
 
 export default class Alignment extends Mark {
@@ -38,6 +38,6 @@ export default class Alignment extends Mark {
   }
 
   commands({ type }) {
-    return (attrs) => toggleMark(type, attrs)
+    return (attrs) => updateMark(type, attrs)
   }
 }
